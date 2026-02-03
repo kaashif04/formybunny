@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Be My Valentine?</title>
+    <title>Will You Be My Valentine?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -12,76 +13,77 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #fff0f3;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff; /* Clean white background */
+            font-family: 'Architects Daughter', cursive; /* Hand-drawn font */
             overflow: hidden;
-        }
-
-        /* Floating background hearts */
-        .bg-heart {
-            position: absolute;
-            color: rgba(255, 77, 109, 0.15);
-            pointer-events: none;
-            z-index: 1;
-            animation: floatUp linear infinite;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+            text-align: center;
+            color: #000000;
         }
 
         .container {
-            background: white;
-            padding: 3rem;
-            border-radius: 40px;
-            box-shadow: 0 15px 45px rgba(255, 77, 109, 0.2);
-            z-index: 10;
-            text-align: center;
-            width: 380px;
-            max-width: 90%;
+            position: relative;
+            width: auto;
         }
 
         h1 {
-            color: #ff4d6d;
-            font-size: 2.2rem;
-            margin-bottom: 2.5rem;
-            line-height: 1.2;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
         }
+
+        .question-marks {
+            font-size: 3rem;
+            color: #ff4d6d; /* Red question marks */
+            display: block;
+            margin-bottom: 2rem;
+        }
+
+        /* Hand-drawn red hearts */
+        .heart-doodle {
+            position: absolute;
+            color: #ff4d6d;
+            font-size: 2.5rem;
+        }
+
+        .h1-left { top: -10px; left: -50px; transform: rotate(-20deg); }
+        .h1-right { top: 10px; right: -50px; transform: rotate(20deg); }
+        .h2-left { bottom: -20px; left: -40px; transform: rotate(15deg); }
+        .h2-right { bottom: 0px; right: -60px; transform: rotate(-15deg); }
 
         .btn-group {
             display: flex;
             justify-content: center;
-            gap: 25px;
+            gap: 80px; /* Space between checkboxes */
             position: relative;
-            height: 55px; /* Keeps container height stable */
         }
 
-        button {
-            width: 120px; /* Fixed width for symmetry */
-            height: 50px;
-            font-size: 1.1rem;
-            border: none;
-            border-radius: 25px;
+        /* Checkbox Style Buttons */
+        .checkbox-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             cursor: pointer;
-            font-weight: 600;
+            position: relative;
+        }
+
+        .checkbox-box {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #000; /* Hand-drawn border look */
+            background-color: transparent;
+            margin-bottom: 10px;
             transition: transform 0.2s;
         }
 
-        #yesBtn {
-            background-color: #ff4d6d;
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+        .checkbox-label {
+            font-size: 2rem;
+            font-weight: bold;
         }
-
-        #noBtn {
-            background-color: #adb5bd;
-            color: white;
-            position: relative; /* Starts in the flow */
+        
+        /* Style for the "No" button's wrapper */
+        #noBtnWrapper {
+            position: relative; /* Starts in flow */
             transition: all 0.2s ease-out;
-            z-index: 15;
         }
 
         /* Success Screen */
@@ -94,12 +96,14 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
+            font-family: 'Architects Daughter', cursive;
         }
 
         #successScreen img {
-            width: 250px;
-            border-radius: 25px;
+            width: 300px;
+            border-radius: 20px;
             margin: 20px;
+            border: 5px solid #ff4d6d;
         }
 
         .heart-rain {
@@ -115,71 +119,70 @@
 </head>
 <body>
 
-    <div class="container" id="mainCard">
-        <h1>Will you be my Valentine? ❤️</h1>
+    <div class="container">
+        <div class="heart-doodle h1-left">❤</div>
+        <div class="heart-doodle h1-right">❤</div>
+        <div class="heart-doodle h2-left">❤</div>
+        <div class="heart-doodle h2-right">❤</div>
+
+        <h1>WILL YOU BE MY VALENTINE?</h1>
+        <span class="question-marks">???</span>
+
         <div class="btn-group">
-            <button id="yesBtn" onclick="celebrate()">Yes</button>
-            <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
+            <div class="checkbox-btn" id="yesBtn" onclick="celebrate()">
+                <div class="checkbox-box"></div>
+                <span class="checkbox-label">YES</span>
+            </div>
+
+            <div class="checkbox-btn" id="noBtnWrapper" onmouseover="moveButton()" onclick="moveButton()">
+                <div class="checkbox-box"></div>
+                <span class="checkbox-label">NO</span>
+            </div>
         </div>
     </div>
 
     <div id="successScreen">
-        <h1 style="color: #ff4d6d;">Yay! Best decision ever! 🥰</h1>
-        <img src="https://via.placeholder.com/250x300?text=Our+Photo" alt="Us">
-        <p style="font-weight: bold; color: #555;">I love you! ❤️</p>
+        <h1 style="color: #ff4d6d; font-size: 3rem;">YAY! YOU SAID YES!</h1>
+        <img src="https://via.placeholder.com/300x400?text=Our+Photo" alt="Us">
+        <p style="font-size: 1.5rem;">Best Valentine's Day Ever! ❤</p>
     </div>
 
     <script>
-        // Background subtle hearts
-        function initBg() {
-            for (let i = 0; i < 15; i++) {
-                const h = document.createElement('div');
-                h.className = 'bg-heart';
-                h.innerHTML = '❤️';
-                h.style.left = Math.random() * 100 + 'vw';
-                h.style.animationDuration = (Math.random() * 5 + 5) + 's';
-                document.body.appendChild(h);
-            }
-        }
-        initBg();
-
         function moveButton() {
-            const btn = document.getElementById('noBtn');
-            const card = document.getElementById('mainCard').getBoundingClientRect();
+            const btn = document.getElementById('noBtnWrapper');
             
             // Switch to fixed to fly freely
             btn.style.position = 'fixed';
 
             let newX, newY;
-            let safe = false;
-
-            while (!safe) {
-                newX = Math.random() * (window.innerWidth - btn.offsetWidth);
-                newY = Math.random() * (window.innerHeight - btn.offsetHeight);
-
-                // Avoid the card area
-                if (newX < card.left - 50 || newX > card.right + 50 || 
-                    newY < card.top - 50 || newY > card.bottom + 50) {
-                    safe = true;
-                }
-            }
+            
+            // Find a random spot on the screen
+            newX = Math.random() * (window.innerWidth - btn.offsetWidth);
+            newY = Math.random() * (window.innerHeight - btn.offsetHeight);
 
             btn.style.left = newX + 'px';
             btn.style.top = newY + 'px';
         }
 
         function celebrate() {
-            document.getElementById('successScreen').style.display = 'flex';
-            setInterval(() => {
-                const h = document.createElement('div');
-                h.className = 'heart-rain';
-                h.innerHTML = '❤️';
-                h.style.left = Math.random() * 100 + 'vw';
-                h.style.fontSize = Math.random() * 20 + 10 + 'px';
-                h.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                document.body.appendChild(h);
-                setTimeout(() => h.remove(), 3000);
-            }, 100);
+            // Add a 'check' mark to the YES box
+            const yesBox = document.querySelector('#yesBtn .checkbox-box');
+            yesBox.style.backgroundColor = '#ff4d6d';
+            yesBox.innerHTML = '<span style="color:white; font-size:35px; line-height:40px;">✓</span>';
+
+            setTimeout(() => {
+                document.getElementById('successScreen').style.display = 'flex';
+                setInterval(() => {
+                    const h = document.createElement('div');
+                    h.className = 'heart-rain';
+                    h.innerHTML = '❤';
+                    h.style.left = Math.random() * 100 + 'vw';
+                    h.style.fontSize = Math.random() * 20 + 15 + 'px';
+                    h.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(h);
+                    setTimeout(() => h.remove(), 3000);
+                }, 100);
+            }, 500); // Short delay to see the checkmark
         }
     </script>
 </body>
