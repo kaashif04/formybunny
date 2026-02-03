@@ -12,17 +12,15 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #fff0f3; /* Soft Pink Background */
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #fff0f3;
+            font-family: 'Segoe UI', sans-serif;
             overflow: hidden;
-            text-align: center;
         }
 
-        /* Floating Background Hearts */
+        /* Floating background hearts */
         .bg-heart {
             position: absolute;
-            color: rgba(255, 77, 109, 0.2); /* Very faint pink */
-            font-size: 20px;
+            color: rgba(255, 77, 109, 0.15);
             pointer-events: none;
             z-index: 1;
             animation: floatUp linear infinite;
@@ -36,168 +34,152 @@
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.9); /* Slight transparency */
-            padding: 3.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
             border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.15);
+            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
             z-index: 10;
             position: relative;
-            backdrop-filter: blur(5px); /* Trendy glass effect */
+            width: 350px;
         }
 
-        h1 {
-            color: #ff4d6d;
-            font-size: 2.2rem;
-            margin-bottom: 2.5rem;
-            font-weight: 700;
-        }
+        h1 { color: #ff4d6d; font-size: 2rem; margin-bottom: 2rem; }
 
         .btn-group {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 30px;
+            gap: 20px;
             min-height: 60px;
         }
 
         button {
-            padding: 15px 40px;
-            font-size: 1.2rem;
+            padding: 12px 35px;
+            font-size: 1.1rem;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: transform 0.2s;
         }
 
         #yesBtn {
             background-color: #ff4d6d;
             color: white;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
-        }
-
-        #yesBtn:hover {
-            transform: scale(1.1);
-            background-color: #ff758f;
+            z-index: 12; /* Keep Yes on top */
         }
 
         #noBtn {
             background-color: #adb5bd;
             color: white;
             position: relative;
-            transition: all 0.2s ease-out;
-            z-index: 11;
+            transition: all 0.15s ease-out;
+            z-index: 15; /* Ensure No is visible while moving */
         }
 
-        /* Success Screen */
         #successScreen {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
+            inset: 0;
+            background: white;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            animation: fadeIn 0.5s ease-in;
         }
 
         #successScreen img {
-            width: 280px;
-            height: 350px;
-            object-fit: cover;
+            width: 250px;
             border-radius: 20px;
-            margin: 20px 0;
-            border: 8px solid #fff0f3;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
-        /* Celebration Hearts (The falling ones) */
-        .celebration-heart {
-            color: #ff4d6d;
+        .heart-rain {
             position: fixed;
             top: -10vh;
-            font-size: 25px;
+            color: #ff4d6d;
             animation: fall linear forwards;
             z-index: 101;
         }
 
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" id="card">
         <h1>Will you be my Valentine? ❤️</h1>
         <div class="btn-group">
             <button id="yesBtn" onclick="celebrate()">Yes</button>
-            <button id="noBtn" onmouseover="moveButton()">No</button>
+            <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
         </div>
     </div>
 
     <div id="successScreen">
-        <h1 style="color: #ff4d6d;">Yay! Best decision ever! 🥰</h1>
-        <img src="https://via.placeholder.com/280x350?text=Our+Photo" alt="Us">
-        <p style="color: #596575; font-size: 1.1rem; font-weight: bold;">I love you! ❤️</p>
+        <h1 style="color: #ff4d6d;">Yay! I'm the luckiest! 🥰</h1>
+        <img src="https://via.placeholder.com/250x300?text=Our+Photo" alt="Us">
+        <p>I love you! ❤️</p>
     </div>
 
     <script>
-        // Create subtle background hearts on load
-        function createBackgroundHearts() {
-            const container = document.body;
-            for (let i = 0; i < 20; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.classList.add('bg-heart');
-                    heart.innerHTML = '❤️';
-                    heart.style.left = Math.random() * 100 + 'vw';
-                    heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
-                    heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
-                    container.appendChild(heart);
-                    
-                    // Keep the hearts cycling
-                    heart.addEventListener('animationiteration', () => {
-                        heart.style.left = Math.random() * 100 + 'vw';
-                    });
-                }, i * 300);
+        // Background Heart Generator
+        function initBg() {
+            for (let i = 0; i < 15; i++) {
+                const h = document.createElement('div');
+                h.className = 'bg-heart';
+                h.innerHTML = '❤️';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                h.style.delay = Math.random() * 5 + 's';
+                document.body.appendChild(h);
             }
         }
-
-        createBackgroundHearts();
+        initBg();
 
         function moveButton() {
             const btn = document.getElementById('noBtn');
-            if (btn.style.position !== 'absolute') {
-                btn.style.position = 'absolute';
+            const card = document.getElementById('card').getBoundingClientRect();
+            
+            // Switch to absolute on first touch
+            btn.style.position = 'fixed';
+
+            let newX, newY;
+            let isInsideCard = true;
+
+            // Keep calculating until the button is outside the white card area
+            while (isInsideCard) {
+                newX = Math.random() * (window.innerWidth - btn.offsetWidth);
+                newY = Math.random() * (window.innerHeight - btn.offsetHeight);
+
+                // Check if the new random position overlaps with the card
+                const padding = 20; 
+                if (!(newX > card.right + padding || 
+                      newX < card.left - btn.offsetWidth - padding || 
+                      newY > card.bottom + padding || 
+                      newY < card.top - btn.offsetHeight - padding)) {
+                    isInsideCard = true;
+                } else {
+                    isInsideCard = false;
+                }
             }
-            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-            btn.style.left = x + 'px';
-            btn.style.top = y + 'px';
+
+            btn.style.left = newX + 'px';
+            btn.style.top = newY + 'px';
         }
 
         function celebrate() {
             document.getElementById('successScreen').style.display = 'flex';
-            // Intense heart rain
             setInterval(() => {
-                const heart = document.createElement('div');
-                heart.classList.add('celebration-heart');
-                heart.innerHTML = '❤️';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                document.body.appendChild(heart);
-                setTimeout(() => heart.remove(), 4000);
-            }, 150);
+                const h = document.createElement('div');
+                h.className = 'heart-rain';
+                h.innerHTML = '❤️';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.fontSize = Math.random() * 20 + 10 + 'px';
+                h.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 3000);
+            }, 100);
         }
     </script>
 </body>
