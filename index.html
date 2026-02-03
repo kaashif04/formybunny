@@ -1,193 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Be My Valentine?</title>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #fff0f3; /* Soft pink background */
-    font-family: 'Nunito', sans-serif; /* Clean font for buttons and body text */
-    overflow: hidden; /* Prevents scrollbars when the button moves */
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fff0f3;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
 
-  .container {
-    background: white;
-    padding: 3rem;
-    border-radius: 30px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* Soft shadow for the card */
-    text-align: center;
-    max-width: 90%;
-    width: 400px;
-    position: relative;
-    z-index: 10;
-  }
+        /* Floating background hearts */
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.15);
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp linear infinite;
+        }
 
-  h1 {
-    color: #ff4d6d;
-    font-family: 'Dancing Script', cursive; /* Romantic script font */
-    font-size: 3rem;
-    margin-bottom: 2.5rem;
-    line-height: 1.2;
-  }
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
 
-  .btn-group {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
+        .container {
+            background: white;
+            padding: 2.5rem; /* Slightly less padding to give text more room */
+            border-radius: 40px;
+            box-shadow: 0 15px 45px rgba(255, 77, 109, 0.2);
+            z-index: 10;
+            text-align: center;
+            width: 450px; /* Wider card */
+            max-width: 90%;
+        }
 
-  button {
-    padding: 12px 35px;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
+        h1 {
+            color: #ff4d6d;
+            font-size: 1.8rem; /* Adjusted size to fit one line */
+            margin-bottom: 2rem;
+            white-space: nowrap; /* Forces text to stay on one line */
+        }
 
-  #yesBtn {
-    background-color: #ff4d6d;
-    color: white;
-    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
-  }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            position: relative;
+            height: 55px;
+        }
 
-  #yesBtn:hover {
-    transform: scale(1.05);
-    background-color: #ff3355;
-  }
+        button {
+            width: 120px;
+            height: 50px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
 
-  #noBtn {
-    background-color: #aab2bd; /* Grey color like in the image */
-    color: white;
-    position: relative;
-    transition: all 0.3s ease-out; /* Smooth movement */
-  }
-    #noBtn:hover {
-    transform: scale(1.05);
-    background-color: #939ba6;
-  }
+        #yesBtn {
+            background-color: #ff4d6d;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+        }
 
+        #noBtn {
+            background-color: #adb5bd;
+            color: white;
+            position: relative;
+            transition: all 0.2s ease-out;
+            z-index: 15;
+        }
 
-  /* Success Screen Styles */
-  #successScreen {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #fff0f3;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    text-align: center;
-  }
+        /* Success Screen */
+        #successScreen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: white;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
 
-  #successScreen h2 {
-      font-family: 'Dancing Script', cursive;
-      color: #ff4d6d;
-      font-size: 3rem;
-      margin-bottom: 1rem;
-  }
+        #successScreen img {
+            width: 250px;
+            border-radius: 25px;
+            margin: 20px;
+        }
 
-  #successScreen img {
-    width: 280px;
-    height: auto;
-    border-radius: 20px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-    margin-bottom: 20px;
-    border: 5px solid white;
-  }
+        .heart-rain {
+            position: fixed;
+            top: -10vh;
+            color: #ff4d6d;
+            animation: fall linear forwards;
+            z-index: 101;
+        }
 
-    #successScreen p {
-        font-size: 1.5rem;
-        color: #555;
-    }
-
-
-  /* Falling Hearts Animation */
-  .heart-rain {
-    position: fixed;
-    top: -10vh;
-    color: #ff4d6d;
-    font-size: 1.5rem;
-    animation: fall linear forwards;
-    z-index: 99;
-  }
-
-  @keyframes fall {
-    to {
-      transform: translateY(110vh) rotate(360deg);
-    }
-  }
-</style>
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+    </style>
 </head>
 <body>
 
-  <div class="container" id="mainCard">
-    <h1>Will you be my Valentine? ❤️</h1>
-    <div class="btn-group">
-      <button id="yesBtn" onclick="celebrate()">Yes</button>
-      <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
+    <div class="container" id="mainCard">
+        <h1>Will you be my Valentine? ❤️</h1>
+        <div class="btn-group">
+            <button id="yesBtn" onclick="celebrate()">Yes</button>
+            <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
+        </div>
     </div>
-  </div>
 
-  <div id="successScreen">
-    <h2>Yay! I'm so happy! ❤️</h2>
-    <img src="https://via.placeholder.com/300x400?text=Our+Photo" alt="Us">
-    <p>Best Valentine's Day ever!</p>
-  </div>
+    <div id="successScreen">
+        <h1 style="color: #ff4d6d;">Yay! Best decision ever! 🥰</h1>
+        <img src="https://via.placeholder.com/250x300?text=Our+Photo" alt="Us">
+        <p style="font-weight: bold; color: #555;">I love you! ❤️</p>
+    </div>
 
-  <script>
-    function moveButton() {
-      const btn = document.getElementById('noBtn');
-      
-      // Set position to fixed so it can move anywhere on the screen
-      btn.style.position = 'fixed';
+    <script>
+        // Background subtle hearts
+        function initBg() {
+            for (let i = 0; i < 15; i++) {
+                const h = document.createElement('div');
+                h.className = 'bg-heart';
+                h.innerHTML = '❤️';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                document.body.appendChild(h);
+            }
+        }
+        initBg();
 
-      // Calculate random positions within the window, with some padding
-      const x = Math.random() * (window.innerWidth - btn.offsetWidth - 40) + 20;
-      const y = Math.random() * (window.innerHeight - btn.offsetHeight - 40) + 20;
-      
-      btn.style.left = `${x}px`;
-      btn.style.top = `${y}px`;
-    }
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            const card = document.getElementById('mainCard').getBoundingClientRect();
+            
+            btn.style.position = 'fixed';
 
-    function celebrate() {
-      // Hide the main card and show the success screen
-      document.getElementById('mainCard').style.display = 'none';
-      document.getElementById('successScreen').style.display = 'flex';
-      
-      // Start the falling hearts animation
-      setInterval(createHeart, 300);
-    }
+            let newX, newY;
+            let safe = false;
 
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.classList.add('heart-rain');
-      heart.innerHTML = '❤️';
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.animationDuration = Math.random() * 2 + 3 + 's'; // Random fall speed
-      heart.style.fontSize = Math.random() * 20 + 15 + 'px'; // Random size
-      document.body.appendChild(heart);
-      
-      // Remove the heart after it falls off screen to keep things clean
-      setTimeout(() => {
-        heart.remove();
-      }, 5000);
-    }
-  </script>
+            while (!safe) {
+                newX = Math.random() * (window.innerWidth - btn.offsetWidth);
+                newY = Math.random() * (window.innerHeight - btn.offsetHeight);
 
+                if (newX < card.left - 50 || newX > card.right + 50 || 
+                    newY < card.top - 50 || newY > card.bottom + 50) {
+                    safe = true;
+                }
+            }
+
+            btn.style.left = newX + 'px';
+            btn.style.top = newY + 'px';
+        }
+
+        function celebrate() {
+            document.getElementById('successScreen').style.display = 'flex';
+            setInterval(() => {
+                const h = document.createElement('div');
+                h.className = 'heart-rain';
+                h.innerHTML = '❤️';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.fontSize = Math.random() * 20 + 10 + 'px';
+                h.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 3000);
+            }, 100);
+        }
+    </script>
 </body>
 </html>
