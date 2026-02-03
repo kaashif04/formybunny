@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fff0f3; /* Soft Pink Background */
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Floating Background Hearts */
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.2); /* Very faint pink */
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9); /* Slight transparency */
+            padding: 3.5rem;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.15);
+            z-index: 10;
+            position: relative;
+            backdrop-filter: blur(5px); /* Trendy glass effect */
+        }
+
+        h1 {
+            color: #ff4d6d;
+            font-size: 2.2rem;
+            margin-bottom: 2.5rem;
+            font-weight: 700;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            min-height: 60px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        #yesBtn {
+            background-color: #ff4d6d;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            background-color: #ff758f;
+        }
+
+        #noBtn {
+            background-color: #adb5bd;
+            color: white;
+            position: relative;
+            transition: all 0.2s ease-out;
+            z-index: 11;
+        }
+
+        /* Success Screen */
+        #successScreen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        #successScreen img {
+            width: 280px;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin: 20px 0;
+            border: 8px solid #fff0f3;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Celebration Hearts (The falling ones) */
+        .celebration-heart {
+            color: #ff4d6d;
+            position: fixed;
+            top: -10vh;
+            font-size: 25px;
+            animation: fall linear forwards;
+            z-index: 101;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Will you be my Valentine? ❤️</h1>
+        <div class="btn-group">
+            <button id="yesBtn" onclick="celebrate()">Yes</button>
+            <button id="noBtn" onmouseover="moveButton()">No</button>
+        </div>
+    </div>
+
+    <div id="successScreen">
+        <h1 style="color: #ff4d6d;">Yay! Best decision ever! 🥰</h1>
+        <img src="https://via.placeholder.com/280x350?text=Our+Photo" alt="Us">
+        <p style="color: #596575; font-size: 1.1rem; font-weight: bold;">I love you! ❤️</p>
+    </div>
+
+    <script>
+        // Create subtle background hearts on load
+        function createBackgroundHearts() {
+            const container = document.body;
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.classList.add('bg-heart');
+                    heart.innerHTML = '❤️';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                    heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
+                    container.appendChild(heart);
+                    
+                    // Keep the hearts cycling
+                    heart.addEventListener('animationiteration', () => {
+                        heart.style.left = Math.random() * 100 + 'vw';
+                    });
+                }, i * 300);
+            }
+        }
+
+        createBackgroundHearts();
+
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            if (btn.style.position !== 'absolute') {
+                btn.style.position = 'absolute';
+            }
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+
+        function celebrate() {
+            document.getElementById('successScreen').style.display = 'flex';
+            // Intense heart rain
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('celebration-heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 4000);
+            }, 150);
+        }
+    </script>
+</body>
+</html>
