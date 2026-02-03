@@ -13,7 +13,7 @@
             align-items: center;
             height: 100vh;
             background-color: #fff0f3;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
         }
 
@@ -34,30 +34,37 @@
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.95);
+            background: white;
             padding: 3rem;
-            border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
+            border-radius: 40px;
+            box-shadow: 0 15px 45px rgba(255, 77, 109, 0.2);
             z-index: 10;
-            position: relative;
-            width: 350px;
+            text-align: center;
+            width: 380px;
+            max-width: 90%;
         }
 
-        h1 { color: #ff4d6d; font-size: 2rem; margin-bottom: 2rem; }
+        h1 {
+            color: #ff4d6d;
+            font-size: 2.2rem;
+            margin-bottom: 2.5rem;
+            line-height: 1.2;
+        }
 
         .btn-group {
             display: flex;
             justify-content: center;
-            align-items: center;
-            gap: 20px;
-            min-height: 60px;
+            gap: 25px;
+            position: relative;
+            height: 55px; /* Keeps container height stable */
         }
 
         button {
-            padding: 12px 35px;
+            width: 120px; /* Fixed width for symmetry */
+            height: 50px;
             font-size: 1.1rem;
             border: none;
-            border-radius: 50px;
+            border-radius: 25px;
             cursor: pointer;
             font-weight: 600;
             transition: transform 0.2s;
@@ -66,17 +73,18 @@
         #yesBtn {
             background-color: #ff4d6d;
             color: white;
-            z-index: 12; /* Keep Yes on top */
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
         }
 
         #noBtn {
             background-color: #adb5bd;
             color: white;
-            position: relative;
-            transition: all 0.15s ease-out;
-            z-index: 15; /* Ensure No is visible while moving */
+            position: relative; /* Starts in the flow */
+            transition: all 0.2s ease-out;
+            z-index: 15;
         }
 
+        /* Success Screen */
         #successScreen {
             display: none;
             position: fixed;
@@ -90,9 +98,8 @@
 
         #successScreen img {
             width: 250px;
-            border-radius: 20px;
+            border-radius: 25px;
             margin: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
         .heart-rain {
@@ -108,7 +115,7 @@
 </head>
 <body>
 
-    <div class="container" id="card">
+    <div class="container" id="mainCard">
         <h1>Will you be my Valentine? ❤️</h1>
         <div class="btn-group">
             <button id="yesBtn" onclick="celebrate()">Yes</button>
@@ -117,21 +124,20 @@
     </div>
 
     <div id="successScreen">
-        <h1 style="color: #ff4d6d;">Yay! I'm the luckiest! 🥰</h1>
+        <h1 style="color: #ff4d6d;">Yay! Best decision ever! 🥰</h1>
         <img src="https://via.placeholder.com/250x300?text=Our+Photo" alt="Us">
-        <p>I love you! ❤️</p>
+        <p style="font-weight: bold; color: #555;">I love you! ❤️</p>
     </div>
 
     <script>
-        // Background Heart Generator
+        // Background subtle hearts
         function initBg() {
             for (let i = 0; i < 15; i++) {
                 const h = document.createElement('div');
                 h.className = 'bg-heart';
                 h.innerHTML = '❤️';
                 h.style.left = Math.random() * 100 + 'vw';
-                h.style.animationDuration = (Math.random() * 4 + 4) + 's';
-                h.style.delay = Math.random() * 5 + 's';
+                h.style.animationDuration = (Math.random() * 5 + 5) + 's';
                 document.body.appendChild(h);
             }
         }
@@ -139,28 +145,22 @@
 
         function moveButton() {
             const btn = document.getElementById('noBtn');
-            const card = document.getElementById('card').getBoundingClientRect();
+            const card = document.getElementById('mainCard').getBoundingClientRect();
             
-            // Switch to absolute on first touch
+            // Switch to fixed to fly freely
             btn.style.position = 'fixed';
 
             let newX, newY;
-            let isInsideCard = true;
+            let safe = false;
 
-            // Keep calculating until the button is outside the white card area
-            while (isInsideCard) {
+            while (!safe) {
                 newX = Math.random() * (window.innerWidth - btn.offsetWidth);
                 newY = Math.random() * (window.innerHeight - btn.offsetHeight);
 
-                // Check if the new random position overlaps with the card
-                const padding = 20; 
-                if (!(newX > card.right + padding || 
-                      newX < card.left - btn.offsetWidth - padding || 
-                      newY > card.bottom + padding || 
-                      newY < card.top - btn.offsetHeight - padding)) {
-                    isInsideCard = true;
-                } else {
-                    isInsideCard = false;
+                // Avoid the card area
+                if (newX < card.left - 50 || newX > card.right + 50 || 
+                    newY < card.top - 50 || newY > card.bottom + 50) {
+                    safe = true;
                 }
             }
 
