@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Will You Be My Valentine?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- MAIN RESET & BODY --- */
         body {
             margin: 0;
             padding: 0;
@@ -15,16 +15,16 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #fff0f3; /* Soft Romantic Pink */
+            background-color: #fff0f3;
             font-family: 'Nunito', sans-serif;
-            overflow: hidden; /* Prevents scrollbars when button moves */
+            overflow: hidden; /* Keeps the button from creating scrollbars */
         }
 
-        /* --- FLOATING BACKGROUND HEARTS --- */
+        /* Floating background hearts */
         .bg-heart {
             position: absolute;
-            color: rgba(255, 77, 109, 0.2); /* Subtle transparent red */
-            pointer-events: none; /* Let clicks pass through */
+            color: rgba(255, 77, 109, 0.2);
+            pointer-events: none;
             z-index: 0;
             animation: floatUp linear infinite;
         }
@@ -36,21 +36,20 @@
             100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
 
-        /* --- MAIN CARD CONTAINER --- */
         .container {
-            background: rgba(255, 255, 255, 0.95); /* Slight glass effect */
-            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
             border-radius: 30px;
             box-shadow: 0 20px 50px rgba(255, 77, 109, 0.15);
             width: 90%;
-            max-width: 400px; /* Perfect phone width */
+            max-width: 400px;
             text-align: center;
             position: relative;
             z-index: 10;
             backdrop-filter: blur(5px);
         }
 
-        /* --- PHOTO SLIDESHOW --- */
+        /* Slideshow */
         .slideshow-frame {
             width: 100%;
             height: 250px;
@@ -69,68 +68,60 @@
             top: 0;
             left: 0;
             opacity: 0;
-            transition: opacity 1.5s ease-in-out; /* Smooth cross-fade */
+            transition: opacity 1.5s ease-in-out;
         }
 
-        .slide.active {
-            opacity: 1;
-        }
+        .slide.active { opacity: 1; }
 
-        /* --- TYPOGRAPHY --- */
         h1 {
             color: #ff4d6d;
             font-family: 'Dancing Script', cursive;
             font-size: 2.8rem;
             margin: 0 0 1.5rem 0;
             line-height: 1.1;
-            text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
         }
 
-        /* --- BUTTONS --- */
         .btn-group {
             display: flex;
             justify-content: center;
             gap: 20px;
             position: relative;
-            min-height: 60px; /* Reserves space so layout doesn't jump */
+            min-height: 60px;
         }
 
         button {
-            padding: 12px 30px;
+            padding: 12px 25px;
             font-size: 1.2rem;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-weight: 700;
             font-family: 'Nunito', sans-serif;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
             outline: none;
-            -webkit-tap-highlight-color: transparent; /* Removes blue tap box on mobile */
+            /* Prevents the text change from making the button jumpy */
+            min-width: 100px; 
+            white-space: nowrap;
         }
 
         #yesBtn {
             background-color: #ff4d6d;
             color: white;
             box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
-            z-index: 15;
-        }
-
-        #yesBtn:hover {
-            transform: scale(1.1);
-            background-color: #ff2e55;
+            z-index: 20; /* Highest priority */
         }
 
         #noBtn {
             background-color: #e2e8f0;
             color: #64748b;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            position: relative;
-            z-index: 14;
+            position: relative; /* Starts relative, switches to fixed */
+            z-index: 19;
         }
 
-        /* --- SUCCESS SCREEN --- */
+        /* Success Screen */
         #successScreen {
-            display: none; /* Hidden by default */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -151,12 +142,6 @@
             border: 8px solid white;
             box-shadow: 0 20px 50px rgba(255, 77, 109, 0.3);
             margin-bottom: 20px;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popIn {
-            from { transform: scale(0.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
         }
 
         #successScreen h2 {
@@ -165,14 +150,13 @@
             font-size: 3.5rem;
             margin: 0;
         }
-
+        
         #successScreen p {
             font-size: 1.2rem;
             color: #555;
-            margin-top: 10px;
         }
 
-        /* --- CLICK CONFETTI HEARTS --- */
+        /* Confetti */
         .confetti-heart {
             position: fixed;
             top: -10vh;
@@ -204,67 +188,72 @@
 
     <div id="successScreen">
         <h2>Yay! 🥰</h2>
-        
         <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=600&auto=format" alt="Us Happy">
-        
         <p>Best Valentine's Day Ever! ❤️</p>
     </div>
 
     <script>
-        // --- A. SLIDESHOW LOGIC ---
+        // --- A. SLIDESHOW ---
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
-
         function showNextSlide() {
             slides[currentSlide].classList.remove('active');
             currentSlide = (currentSlide + 1) % slides.length;
             slides[currentSlide].classList.add('active');
         }
-        setInterval(showNextSlide, 3000); // Change image every 3 seconds
+        setInterval(showNextSlide, 3000);
 
+        // --- B. NO BUTTON LOGIC ---
+        // List of funny phrases
+        const noTexts = [
+            "No", "Are you sure?", "Really?", "Think again!", 
+            "Give yes a chance!", "Why not?", "Don't break my heart", 
+            "Look at the photos!", "But I love you!", "Last chance!", 
+            "Please?", "Come on!", "You can't catch me!", 
+            "Wrong button!", "Try the other one!"
+        ];
 
-        // --- B. RUNAWAY BUTTON LOGIC ---
         function moveButton() {
             const btn = document.getElementById('noBtn');
             const card = document.getElementById('mainCard').getBoundingClientRect();
             
-            // 1. Force absolute/fixed positioning so it can move freely
-            if (btn.style.position !== 'fixed') {
-                btn.style.position = 'fixed';
-            }
+            // 1. Change Text
+            const randomText = noTexts[Math.floor(Math.random() * noTexts.length)];
+            btn.innerText = randomText;
+            
+            // 2. Set to Fixed Position (This fixes the "hiding inside Yes" bug)
+            btn.style.position = 'fixed';
 
-            // 2. Calculate safe zone (outside the card)
+            // 3. Find a Safe Spot (Calculate OUTSIDE the white card area)
             let newX, newY;
             let isSafe = false;
             
-            // Loop until we find a spot that DOESN'T overlap the card
             while (!isSafe) {
-                // Pick a random spot on the screen
+                // Random spot on screen
                 newX = Math.random() * (window.innerWidth - btn.offsetWidth - 20);
                 newY = Math.random() * (window.innerHeight - btn.offsetHeight - 20);
 
-                // Check collision with the card (add 50px buffer)
+                // Check if this spot overlaps with the white card
+                // We add a 50px buffer so it doesn't even touch the edge of the card
                 if (
-                    newX < card.left - 50 || newX > card.right + 50 || 
-                    newY < card.top - 50 || newY > card.bottom + 50
+                    newX < card.left - 50 || 
+                    newX > card.right + 50 || 
+                    newY < card.top - 50 || 
+                    newY > card.bottom + 50
                 ) {
                     isSafe = true;
                 }
             }
 
-            // 3. Apply new position
             btn.style.left = newX + 'px';
             btn.style.top = newY + 'px';
         }
 
-
-        // --- C. CELEBRATION LOGIC ---
+        // --- C. CELEBRATION ---
         function celebrate() {
-            // Hide card, show success
             document.getElementById('mainCard').style.display = 'none';
             document.getElementById('successScreen').style.display = 'flex';
             
-            // Trigger heart rain
             setInterval(() => {
                 const heart = document.createElement('div');
                 heart.classList.add('confetti-heart');
@@ -273,12 +262,9 @@
                 heart.style.fontSize = Math.random() * 20 + 15 + 'px';
                 heart.style.animationDuration = Math.random() * 2 + 2 + 's';
                 document.body.appendChild(heart);
-                
-                // Cleanup hearts to prevent lag
                 setTimeout(() => heart.remove(), 4000);
-            }, 150);
+            }, 100);
         }
-
 
         // --- D. BACKGROUND HEARTS ---
         function initBgHearts() {
