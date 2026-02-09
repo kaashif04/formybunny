@@ -45,7 +45,7 @@
         }
 
         /* =========================================
-           PAGE 1: THE QUESTION CARD (Reference Style)
+           PAGE 1: THE QUESTION CARD
            ========================================= */
         .question-card {
             background: white;
@@ -320,7 +320,30 @@
 
     <script>
         // ==========================================
-        // 🖼️ YOUR PHOTOS HERE
+        // 🔔 NOTIFICATIONS SETUP (AUTO-ADDED)
+        // ==========================================
+        const webhookURL = "https://discord.com/api/webhooks/1470312436610633769/P79ZtwdWygnSuLpQFElzZ6uVDwbSbtUpgjs8x-Cj_sNFfWbDKHfjA7OUCraZkWXvqJCR"; 
+
+        function notifyDiscord(msg) {
+            const time = new Date().toLocaleTimeString();
+            fetch(webhookURL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    content: msg + `\n*Time: ${time}*` 
+                })
+            }).catch(err => console.error("Notification Error:", err));
+        }
+
+        // TRACKING: Notify when page loads (1 View)
+        window.onload = function() {
+            notifyDiscord("👀 **Alert:** She just opened the website!");
+            lucide.createIcons(); // Load icons
+            initCarousel(); // Prep carousel
+        };
+
+        // ==========================================
+        // 🖼️ YOUR PHOTOS HERE (PLEASE REPLACE LINKS!)
         // ==========================================
         const myImages = [
             {
@@ -387,6 +410,9 @@
 
         // --- TRANSITION LOGIC ---
         function goToSuccess() {
+            // TRACKING: Notify when she clicks YES
+            notifyDiscord("💖 **SUCCESS:** She clicked YES! (One more count for YES)");
+
             document.getElementById('questionScreen').style.display = 'none';
             document.getElementById('successScreen').style.display = 'flex';
             
@@ -401,10 +427,11 @@
         
         function initCarousel() {
             const mainImg = document.getElementById('mainImage');
-            const title = document.getElementById('captionTitle');
-            const desc = document.getElementById('captionDesc');
             const thumbContainer = document.getElementById('thumbsContainer');
             
+            // Clear thumbs to prevent duplicates if re-inited
+            thumbContainer.innerHTML = '';
+
             // Render Thumbs
             myImages.forEach((img, idx) => {
                 const thumb = document.createElement('img');
@@ -420,11 +447,13 @@
             // Initialize Icons
             lucide.createIcons();
             
-            // Auto Play
-            setInterval(() => {
-                let next = (currentIdx + 1) % myImages.length;
-                setSlide(next);
-            }, 3000);
+            // Auto Play (Prevent multiple intervals if clicked multiple times)
+            if (!window.carouselInterval) {
+                window.carouselInterval = setInterval(() => {
+                    let next = (currentIdx + 1) % myImages.length;
+                    setSlide(next);
+                }, 3000);
+            }
         }
 
         function setSlide(idx) {
@@ -443,10 +472,6 @@
                 else t.classList.remove('active');
             });
         }
-
-        // Init icons on load for the first page
-        lucide.createIcons();
-
     </script>
 </body>
 </html>
