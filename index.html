@@ -3,191 +3,483 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Valentine?</title>
+    <title>One Day, You & Me</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
-        /* Reset & Body Styles */
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            /* Soft pale pink background from Image 1 */
-            background-color: #fff5f7; 
-            font-family: 'Nunito', sans-serif;
-            overflow: hidden; /* Prevents scrollbars during movement */
+        /* --- RESET & VARIABLES --- */
+        :root {
+            --pink-100: #ffe4e6;
+            --pink-200: #fecdd3;
+            --pink-300: #fda4af;
+            --pink-400: #fb7185;
+            --pink-500: #f43f5e;
+            --pink-600: #e11d48;
+            --rose-100: #ffe4e6;
+            --rose-300: #fda4af;
         }
 
-        /* The Main White Card */
-        .container {
-            background: #ffffff;
-            padding: 3rem;
-            border-radius: 35px; /* Smooth rounded corners */
-            /* Soft shadow giving it the floating effect */
-            box-shadow: 0 20px 60px rgba(232, 90, 113, 0.15);
-            width: 90%;
-            max-width: 420px;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--rose-100), var(--pink-200), var(--rose-300));
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568;
+        }
+
+        /* --- BACKGROUND ANIMATIONS --- */
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255,182,193,0.5) 0%, transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(255,192,203,0.5) 0%, transparent 30%),
+                radial-gradient(circle at 50% 50%, rgba(255,218,185,0.3) 0%, transparent 40%);
+            opacity: 0.6;
+            z-index: -2;
+        }
+
+        /* Floating Hearts */
+        .floating-heart {
+            position: fixed;
+            color: rgba(253, 164, 175, 0.4);
+            pointer-events: none;
+            z-index: -1;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            from { transform: translateY(110vh); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            to { transform: translateY(-20vh); opacity: 0; }
+        }
+
+        /* --- HEADER --- */
+        header {
             text-align: center;
-            position: relative;
+            margin-bottom: 2rem;
+            animation: fadeInDown 1s ease-out;
             z-index: 10;
         }
 
-        /* Typography */
+        .bunny-header {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+            animation: wiggle 2s infinite ease-in-out;
+        }
+
         h1 {
-            /* Pink/Red color from Image 1 */
-            color: #e85a71;
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin: 0 0 2.5rem 0;
-            line-height: 1.2;
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: var(--pink-600);
+            text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
+            margin-bottom: 0.5rem;
         }
 
-        /* Button Layout */
-        .btn-group {
-            display: flex;
-            justify-content: center;
-            gap: 20px; /* Space between buttons */
+        .subtitle {
+            color: var(--pink-500);
+            font-size: 1.2rem;
+            font-style: italic;
+        }
+
+        /* --- CAROUSEL CONTAINER --- */
+        .carousel-container {
             position: relative;
-            min-height: 60px; /* Reserves space */
+            width: 90%;
+            max-width: 800px;
+            perspective: 1000px; /* For 3D effect */
+            z-index: 10;
         }
 
-        /* General Button Styling */
-        button {
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            border: none;
-            border-radius: 50px; /* Fully rounded ends */
-            cursor: pointer;
-            font-weight: 800;
-            font-family: 'Nunito', sans-serif;
-            transition: all 0.2s;
-            outline: none;
-            min-width: 110px; 
-            white-space: nowrap; /* Keeps text on one line */
-            /* Ensure buttons are above the background but below the moving No button */
-            z-index: 11; 
+        .carousel-frame {
+            position: relative;
+            height: 450px; /* Adjust height based on preference */
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(225, 29, 72, 0.15);
+            overflow: hidden;
         }
 
-        /* YES Button Styles */
-        #yesBtn {
-            /* Pink color from Image 1 */
-            background-color: #e85a71;
-            color: white;
-            box-shadow: 0 5px 20px rgba(232, 90, 113, 0.3);
+        /* Slides */
+        .slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transform: scale(0.8) rotateY(-10deg);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
         }
 
-        #yesBtn:hover {
-            transform: scale(1.05);
-            background-color: #d74a61;
+        .slide.active {
+            opacity: 1;
+            transform: scale(1) rotateY(0);
+            z-index: 2;
         }
 
-        /* NO Button Styles */
-        #noBtn {
-            /* Gray color from Image 1 */
-            background-color: #a9a9a9;
-            color: white;
-            position: relative; /* Starts relative, becomes fixed on hover */
-            /* High z-index ensures it's always on top when moving */
-            z-index: 20; 
+        .slide.prev {
+            transform: translateX(-100%) scale(0.8) rotateY(45deg);
+            opacity: 0;
+            z-index: 1;
         }
 
-        /* --- SUCCESS SCREEN (Hidden initially) --- */
-        #successScreen {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+        .slide.next {
+            transform: translateX(100%) scale(0.8) rotateY(-45deg);
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .slide img {
             width: 100%;
             height: 100%;
-            background: #fff5f7;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            text-align: center;
+            object-fit: cover;
         }
 
-        #successScreen h2 {
-            color: #e85a71;
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 20px;
+        /* Text Overlay */
+        .caption-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            text-align: center;
+            transform: translateY(100%);
+            transition: transform 0.5s 0.2s;
         }
+
+        .slide.active .caption-bar {
+            transform: translateY(0);
+        }
+
+        .caption-title {
+            color: var(--pink-600);
+            font-weight: 800;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .caption-desc {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        /* --- NAVIGATION ARROWS --- */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--pink-500);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            z-index: 20;
+        }
+
+        .nav-btn:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.1);
+            color: var(--pink-600);
+        }
+
+        .prev-btn { left: 20px; }
+        .next-btn { right: 20px; }
+
+        /* --- THUMBNAILS --- */
+        .thumbnails {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 2rem;
+            padding-bottom: 1rem;
+            overflow-x: auto;
+            width: 90%;
+            max-width: 800px;
+            z-index: 10;
+        }
+
+        .thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            border: 3px solid rgba(255,255,255,0.5);
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s;
+            opacity: 0.7;
+            flex-shrink: 0;
+        }
+
+        .thumb:hover { transform: scale(1.1); opacity: 1; }
+        .thumb.active {
+            border-color: var(--pink-500);
+            box-shadow: 0 0 15px var(--pink-300);
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- FOOTER MESSAGE & BUNNIES --- */
+        .footer-msg {
+            margin-top: 2rem;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            border: 2px solid var(--pink-200);
+            animation: fadeInUp 1s ease-out 0.5s backwards;
+            z-index: 10;
+        }
+
+        .footer-msg p {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--pink-600);
+        }
+
+        .corner-bunny {
+            position: fixed;
+            bottom: 20px;
+            font-size: 3rem;
+            animation: bounce 2s infinite;
+            z-index: 5;
+        }
+
+        .bunny-left { left: 20px; }
+        .bunny-right { right: 20px; animation-delay: 0.5s; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.5rem; }
+            .carousel-frame { height: 350px; }
+            .thumb { width: 60px; height: 60px; }
+            .nav-btn { width: 40px; height: 40px; }
+            .caption-title { font-size: 1.2rem; }
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="container" id="mainCard">
-        <h1>Will you be my Valentine? ❤️</h1>
+    <div class="bg-overlay"></div>
+    <header>
+        <div class="bunny-header">💕🐰💕</div>
+        <h1>One Day, You & Me</h1>
+        <p class="subtitle">Every moment with you will always be my treasure</p>
+    </header>
 
-        <div class="btn-group">
-            <button id="yesBtn" onclick="celebrate()">Yes</button>
-            <button id="noBtn" onmouseover="moveButton()" ontouchstart="moveButton()">No</button>
+    <div class="carousel-container" id="carousel">
+        <div class="carousel-frame">
+            </div>
+
+        <button class="nav-btn prev-btn" onclick="moveSlide(-1)">
+            <i data-lucide="chevron-left"></i>
+        </button>
+        <button class="nav-btn next-btn" onclick="moveSlide(1)">
+            <i data-lucide="chevron-right"></i>
+        </button>
+    </div>
+
+    <div class="thumbnails" id="thumbnail-container">
         </div>
+
+    <div class="footer-msg">
+        <p>I Love You Forever! 💕🐰💕</p>
     </div>
 
-    <div id="successScreen">
-        <h2>YAY! 🥰</h2>
-        <p style="font-size: 1.2rem; color: #666; font-weight: 700;">Best decision ever!</p>
-    </div>
+    <div class="corner-bunny bunny-left">🐇</div>
+    <div class="corner-bunny bunny-right">🐰</div>
 
     <script>
-        // The persuasive text phrases
-        const noTexts = [
-            "No", "Are you sure?", "Really?", "Think again!", 
-            "Give yes a chance!", "Why not?", "Don't break my heart", 
-            "Look at me! 🥺", "But I love you!", "Last chance!", 
-            "Pretty please?", "Come on!", "You can't catch me!", 
-            "Try the pink one!", "Nope, not this one!"
+        // ==========================================
+        // 🖼️ YOUR IMAGE CONFIGURATION
+        // ==========================================
+        const myImages = [
+            {
+                url: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=600&auto=format',
+                caption: 'Our First Date 💕',
+                description: 'The day we first met...'
+            },
+            {
+                url: 'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=600&auto=format',
+                caption: 'Adventures Together 🌟',
+                description: 'Exploring the world with you'
+            },
+            {
+                url: 'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=600&auto=format',
+                caption: 'My Favorite Person 💖',
+                description: 'You make everything better'
+            },
+            {
+                url: 'https://images.unsplash.com/photo-1516575334481-f85287c2c82d?q=80&w=600&auto=format',
+                caption: 'Forever & Always 💗',
+                description: 'Together forever'
+            },
+            {
+                url: 'https://images.unsplash.com/photo-1520854221256-17451cc330e7?q=80&w=600&auto=format',
+                caption: 'Love You More 💝',
+                description: 'To the moon and back'
+            }
         ];
 
-        function moveButton() {
-            const btn = document.getElementById('noBtn');
-            const card = document.getElementById('mainCard').getBoundingClientRect();
-            
-            // 1. Change the text randomly
-            const randomText = noTexts[Math.floor(Math.random() * noTexts.length)];
-            btn.innerText = randomText;
-            
-            // 2. Switch to fixed positioning for free movement
-            btn.style.position = 'fixed';
+        // --- INIT STATE ---
+        let currentIndex = 0;
+        let isAutoPlaying = true;
+        const frame = document.querySelector('.carousel-frame');
+        const thumbContainer = document.getElementById('thumbnail-container');
 
-            // 3. Calculate a safe position OUTSIDE the main card
-            let newX, newY;
-            let isSafe = false;
-            const buffer = 30; // Extra space away from the card edges
+        // --- RENDER SLIDES & THUMBS ---
+        function initCarousel() {
+            // Create Slides
+            myImages.forEach((img, index) => {
+                const slide = document.createElement('div');
+                slide.className = `slide ${index === 0 ? 'active' : ''}`;
+                slide.innerHTML = `
+                    <img src="${img.url}" alt="${img.caption}">
+                    <div class="caption-bar">
+                        <div class="caption-title">
+                            <i data-lucide="sparkles" size="20" color="#db2777"></i>
+                            ${img.caption}
+                            <i data-lucide="sparkles" size="20" color="#db2777"></i>
+                        </div>
+                        <p class="caption-desc">${img.description}</p>
+                    </div>
+                `;
+                frame.appendChild(slide);
 
-            // Keep generating random points until one is outside the card area
-            while (!isSafe) {
-                newX = Math.random() * (window.innerWidth - btn.offsetWidth - 20);
-                newY = Math.random() * (window.innerHeight - btn.offsetHeight - 20);
+                // Create Thumbnail
+                const thumb = document.createElement('div');
+                thumb.className = `thumb ${index === 0 ? 'active' : ''}`;
+                thumb.onclick = () => goToSlide(index);
+                thumb.innerHTML = `<img src="${img.url}" alt="thumbnail">`;
+                thumbContainer.appendChild(thumb);
+            });
 
-                // Check if the point overlaps with the main card rectangle
-                if (
-                    newX < card.left - buffer || 
-                    newX > card.right + buffer || 
-                    newY < card.top - buffer || 
-                    newY > card.bottom + buffer
-                ) {
-                    // If it's outside, it's safe!
-                    isSafe = true;
-                }
-            }
-
-            // Apply the new safe coordinates
-            btn.style.left = newX + 'px';
-            btn.style.top = newY + 'px';
+            // Initialize Icons
+            lucide.createIcons();
         }
 
-        function celebrate() {
-            // Simple success action
-            document.getElementById('mainCard').style.display = 'none';
-            document.getElementById('successScreen').style.display = 'flex';
+        // --- CAROUSEL LOGIC ---
+        function updateClasses(newIndex, direction) {
+            const slides = document.querySelectorAll('.slide');
+            const thumbs = document.querySelectorAll('.thumb');
+            
+            // Clean up old classes
+            slides.forEach(s => {
+                s.className = 'slide';
+            });
+            thumbs.forEach(t => t.classList.remove('active'));
+
+            // Set Active
+            slides[newIndex].classList.add('active');
+            thumbs[newIndex].classList.add('active');
+
+            // Handle Exit Animations (Optional polish)
+            // You can add 'prev' or 'next' classes to the old slide here if you want overlapping exits, 
+            // but the CSS transition handles the standard fade/scale well.
         }
+
+        function moveSlide(direction) {
+            let nextIndex = currentIndex + direction;
+            if (nextIndex >= myImages.length) nextIndex = 0;
+            if (nextIndex < 0) nextIndex = myImages.length - 1;
+            
+            currentIndex = nextIndex;
+            updateClasses(currentIndex, direction);
+        }
+
+        function goToSlide(index) {
+            const direction = index > currentIndex ? 1 : -1;
+            currentIndex = index;
+            updateClasses(currentIndex, direction);
+        }
+
+        // --- AUTOPLAY ---
+        setInterval(() => {
+            if (isAutoPlaying) moveSlide(1);
+        }, 5000);
+
+        const container = document.getElementById('carousel');
+        container.addEventListener('mouseenter', () => isAutoPlaying = false);
+        container.addEventListener('mouseleave', () => isAutoPlaying = true);
+
+        // --- FLOATING HEARTS GENERATOR ---
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerHTML = `<i data-lucide="heart" fill="currentColor"></i>`;
+            
+            // Randomize properties
+            const size = Math.random() * 20 + 10;
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.width = size + 'px';
+            heart.style.height = size + 'px';
+            heart.style.animationDuration = Math.random() * 10 + 5 + 's';
+            
+            document.body.appendChild(heart);
+            lucide.createIcons();
+
+            // Cleanup
+            setTimeout(() => heart.remove(), 15000);
+        }
+
+        // Initialize Everything
+        initCarousel();
+        
+        // Spawn hearts periodically
+        setInterval(createHeart, 600);
+        // Spawn initial batch
+        for(let i=0; i<10; i++) setTimeout(createHeart, i * 300);
+
     </script>
 </body>
 </html>
