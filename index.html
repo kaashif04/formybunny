@@ -298,7 +298,7 @@
     </div>
 
     <div class="success-container" id="successScreen">
-        <h1 class="success-msg">I Love You Forever! 🐰💖</h1>
+        <h1 class="success-msg">I Love You Forever! 💕🐰</h1>
         
         <div class="carousel-wrapper">
             <div class="main-image-container">
@@ -314,8 +314,7 @@
         </div>
         
         <p style="color: white; font-weight: bold; font-size: 1.2rem; margin-top: 10px;">
-            You are my everything 💖
-            I Miss You!
+            You are my greatest adventure ✨
         </p>
     </div>
 
@@ -369,19 +368,34 @@
             }
         ];
 
-        // --- NO BUTTON LOGIC ---
+        // --- SMART NO BUTTON LOGIC (NO REPEATS!) ---
         const noTexts = [
             "Are you sure? 🥺", "Really? 😢", "Think again! 💭", 
             "Last chance! ⚠️", "Surely not? 😭", "You might regret it! 😬", 
             "Give it a try! ❤️", "Don't be mean! 💔", "Look at the bunny! 🐰"
         ];
+        
+        // Create a copy to track what is available
+        let availableTexts = [...noTexts];
 
         function moveButton() {
             const btn = document.getElementById('noBtn');
             const card = document.querySelector('.question-card').getBoundingClientRect();
             
-            // Random Text
-            btn.innerText = noTexts[Math.floor(Math.random() * noTexts.length)];
+            // --- NEW: Smart Random Logic ---
+            if (availableTexts.length === 0) {
+                // If we've used all texts, refill the bag
+                availableTexts = [...noTexts];
+            }
+            // Pick random index from available
+            const randomIndex = Math.floor(Math.random() * availableTexts.length);
+            const text = availableTexts[randomIndex];
+            
+            // Remove it so it doesn't repeat until bag is empty
+            availableTexts.splice(randomIndex, 1);
+            
+            btn.innerText = text;
+            // -------------------------------
             
             // Fixed Position
             btn.style.position = 'fixed';
